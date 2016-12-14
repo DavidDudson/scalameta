@@ -14,7 +14,7 @@ import bintray.BintrayPlugin.autoImport._
 object build extends Build {
   lazy val ScalaVersion = "2.11.8"
   lazy val ScalaVersions = Seq("2.11.8, 2.12.0")
-  lazy val LibraryVersion = "1.5.0-SNAPSHOT"
+  lazy val LibraryVersion = "2.0.0-SNAPSHOT"
   lazy val isSnapshot = LibraryVersion.endsWith("SNAPSHOT")
 
   lazy val scalametaRoot = Project(
@@ -58,6 +58,7 @@ object build extends Build {
     inputs,
     parsers,
     quasiquotes,
+    semantic,
     scalameta,
     tokenizers,
     tokens,
@@ -155,6 +156,14 @@ object build extends Build {
     enableMacros
   ) dependsOn (common, dialects, inputs, tokens, tokenizers) // NOTE: tokenizers needed for Tree.tokens when Tree.pos.isEmpty
 
+  lazy val semantic = Project(
+    id   = "semantic",
+    base = file("scalameta/semantic")
+  ) settings (
+    publishableSettings,
+    description := "Scala.meta's semantic APIs"
+  ) dependsOn (common, trees)
+
   lazy val scalameta = Project(
     id   = "scalameta",
     base = file("scalameta/scalameta")
@@ -162,7 +171,7 @@ object build extends Build {
     publishableSettings,
     description := "Scala.meta's metaprogramming APIs",
     exposePaths("scalameta", Test)
-  ) dependsOn (common, dialects, parsers, quasiquotes, tokenizers, transversers, trees, inline)
+  ) dependsOn (common, dialects, parsers, quasiquotes, tokenizers, transversers, trees, inline, semantic)
 
   lazy val readme = scalatex.ScalatexReadme(
     projectId = "readme",
