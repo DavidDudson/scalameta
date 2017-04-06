@@ -343,7 +343,9 @@ lazy val contrib = crossProject
     publishableSettings,
     description := "Utilities for scala.meta"
   )
-  .jvmConfigure(_.dependsOn(testkit))
+  .jvmConfigure(
+    _.settings(libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value
+    .dependsOn(testkit))
   .dependsOn(scalameta)
 lazy val contribJVM = contrib.jvm
 lazy val contribJS = contrib.js
